@@ -1,0 +1,32 @@
+  AI-BASED STUDENT PERFORMANCE PREDICTION SYSTEM
+
+Introduction:
+
+AI Based student performance prediction system predict the students performance using machine learning models based on the given factors such as:
+Attendance
+Internal Marks
+Study hours
+Assignments completion
+
+Application:
+
+This helps students to identify the risk and supports early intervention.
+
+-----------------------------------------
+Dataset Design:
+
+The dataset will include the following input features:
+
+1. attendance – Percentage of classes attended (0–100)
+2. internal_marks – Internal exam score (0–50)
+3. study_hours – Average weekly study hours (0–6)
+4. assignments – Assignment completion percentage (0–100)
+
+Target Variable:
+5. performance – Final student outcome (Pass/Fail)
+
+Reason for selecting these features:
+These parameters represent student academic behavior, consistency, and preparation level. They are strong indicators of academic performance and help the ML model identify students at risk.
+-----------------------------------------
+
+
