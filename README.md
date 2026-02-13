@@ -1,5 +1,5 @@
 # Student Performance Prediction using Machine Learning
-This project predicts whether a student will PASS or FAIL based on academic factors using a Machine Learning model.
+This project predicts student performance using Machine Learning and enhances interpretability using Prompt Engineering to generate human-readable explanations and recommendations.
 ________________________________________
 ## Project Overview
 Educational institutions can use this system to identify students at risk and take early action.
@@ -11,10 +11,12 @@ The model analyzes:
 and predicts student performance.
 ________________________________________
 ## Machine Learning Used
-•	Algorithm: Logistic Regression
-•	Library: Scikit-Learn
-•	Data Handling: Pandas
-•	Visualization: Matplotlib & Seaborn
+- Python
+- Pandas, Scikit-learn
+- Logistic Regression
+- Prompt Engineering (Rule-based AI explanations)
+- Matplotlib, Seaborn
+
 ________________________________________
 ## Features of This Project
  ✔ Student performance prediction
