@@ -1,28 +1,19 @@
-# Fix matplotlib freeze issue (IMPORTANT – keep this at top)
-import matplotlib
-matplotlib.use('TkAgg')
-
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, classification_report
 
 # ===============================
 # STEP 1 — Load Dataset
 # ===============================
-data = pd.read_csv("data/students.csv")
-
-# Clean column names
+data = pd.read_csv("data/students.csv", encoding="utf-8")
 data.columns = data.columns.str.strip()
 
 # ===============================
 # STEP 2 — Features & Target
 # ===============================
 X = data[["attendance", "internal_marks", "study_hours", "assignments"]]
-y = data["performance"].map({"Pass": 1, "Fail": 0})  # Encode target
+y = data["performance"].map({"Pass": 1, "Fail": 0})
 
 # ===============================
 # STEP 3 — Train Test Split
@@ -34,60 +25,88 @@ X_train, X_test, y_train, y_test = train_test_split(
 # ===============================
 # STEP 4 — Train Model
 # ===============================
-model = LogisticRegression()
+model = LogisticRegression(max_iter=1000)
 model.fit(X_train, y_train)
 
 # ===============================
-# STEP 5 — Model Accuracy
+# STEP 5 — Evaluate Model
 # ===============================
-accuracy = model.score(X_test, y_test)
-print("Model Accuracy:", accuracy)
+print("\nModel Accuracy:", model.score(X_test, y_test))
+print("\nConfusion Matrix:\n", confusion_matrix(y_test, model.predict(X_test)))
 
 # ===============================
-# STEP 6 — Predict New Student
+# STEP 6 — USER INPUT (IMPORTANT CHANGE)
 # ===============================
+print("\nEnter Student Details:")
+
+attendance = float(input("Attendance (%): "))
+internal_marks = float(input("Internal Marks: "))
+study_hours = float(input("Study Hours per Day: "))
+assignments = float(input("Assignment Score: "))
+
 new_student = pd.DataFrame(
-    [[85, 40, 3, 80]],
+    [[attendance, internal_marks, study_hours, assignments]],
     columns=["attendance", "internal_marks", "study_hours", "assignments"]
 )
 
-prediction = model.predict(new_student)
+prediction = model.predict(new_student)[0]
+result = "PASS" if prediction == 1 else "FAIL"
 
-if prediction[0] == 1:
-    print("Prediction for new student: PASS")
-else:
-    print("Prediction for new student: FAIL")
+print("\nPrediction:", result)
 
 # ===============================
-# STEP 7 — VISUALIZATIONS
+# STEP 7 — PROMPT: Explanation
 # ===============================
+def explanation_prompt(student, prediction):
+    a, m, h, asg = student.iloc[0]
 
-# GRAPH 1 — Pass vs Fail Count
-sns.countplot(x=data["performance"])
-plt.title("Pass vs Fail Distribution")
-plt.xlabel("Performance")
-plt.ylabel("Number of Students")
-plt.show()
+    explanation = f"""
+AI Explanation:
+The model analyzed attendance ({a}%), internal marks ({m}),
+study hours ({h}), and assignment performance ({asg}).
 
-# GRAPH 2 — Attendance vs Performance
-sns.boxplot(x=data["performance"], y=data["attendance"])
-plt.title("Attendance Impact on Performance")
-plt.xlabel("Performance")
-plt.ylabel("Attendance")
-plt.show()
+"""
 
-# GRAPH 3 — Internal Marks vs Performance
-sns.boxplot(x=data["performance"], y=data["internal_marks"])
-plt.title("Internal Marks Impact on Performance")
-plt.xlabel("Performance")
-plt.ylabel("Internal Marks")
-plt.show()
+    if prediction == "PASS":
+        explanation += (
+            "The student is likely to PASS due to consistent academic behavior "
+            "and sufficient engagement across learning activities."
+        )
+    else:
+        explanation += (
+            "The student is likely to FAIL due to insufficient academic engagement "
+            "or weak performance indicators."
+        )
+
+    return explanation
 
 # ===============================
-# STEP 8 — Confusion Matrix
+# STEP 8 — PROMPT: Recommendations
 # ===============================
-cm = confusion_matrix(y_test, model.predict(X_test))
-print("Confusion Matrix:\n", cm)
+def recommendation_prompt(student):
+    a, m, h, asg = student.iloc[0]
+
+    rec = "\nAI Recommendations:\n"
+
+    if a < 75:
+        rec += "- Improve attendance to at least 75%.\n"
+    if m < 35:
+        rec += "- Strengthen internal exam preparation.\n"
+    if h < 3:
+        rec += "- Increase daily study hours.\n"
+    if asg < 70:
+        rec += "- Improve assignment submission quality.\n"
+
+    if rec == "\nAI Recommendations:\n":
+        rec += "- Maintain current academic consistency.\n"
+
+    return rec
+
+# ===============================
+# STEP 9 — DISPLAY PROMPT OUTPUT
+# ===============================
+print(explanation_prompt(new_student, result))
+print(recommendation_prompt(new_student))
 
 
 

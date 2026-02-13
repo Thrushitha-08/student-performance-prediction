@@ -1,0 +1,24 @@
+def explanation_prompt(student, prediction):
+    return f"""
+You are an academic performance advisor.
+
+Student Details:
+- Attendance: {student['attendance']}%
+- Internal Marks: {student['internal_marks']}
+- Study Hours per day: {student['study_hours']}
+- Assignment Score: {student['assignment_score']}
+
+Prediction Result: {prediction}
+
+Explain clearly why this prediction was made in simple terms.
+"""
+
+
+def recommendation_prompt(student, prediction):
+    return f"""
+You are an academic mentor.
+
+Based on the following student data and prediction ({prediction}),
+suggest practical steps the student can take to improve performance.
+Keep suggestions realistic and actionable.
+"""
